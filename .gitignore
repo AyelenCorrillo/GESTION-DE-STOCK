@@ -1,0 +1,19 @@
+HELP.md
+target/
+.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+### VS Code ###
+.vscode/
+
+### Configuracion del proyecto y Base de datos ###
+application.properties
+
+# Archivos de metadatos de Java
+.classpath
+.project
+.settings/
+
+# Archivos de logs
+*.log

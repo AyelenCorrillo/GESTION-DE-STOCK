@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Gestión de Inventario</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .container { max-width: 1200px; margin: 0 auto; }
+        h2 { border-bottom: 2px solid #333; padding-bottom: 10px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+        .btn-link { margin-right: 10px; padding: 5px 10px; text-decoration: none; border: 1px solid #007bff; border-radius: 3px; color: #007bff; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Inventario de Productos</h1>
+
+    <form th:action="@{/}" method="get" style="margin-bottom: 20px;">
+        <input type="text" name="keyword" th:value="${keyword}" placeholder="Buscar producto por nombre..." size="50">
+        <button type="submit" style="background-color: #333; color: white; padding: 8px 15px; border: none; border-radius: 3px; cursor: pointer;">Buscar</button>
+        <a th:href="@{/}" class="btn-link" style="margin-left: 10px;">Limpiar Filtro</a>
+    </form>
+
+    <div>
+        <a th:href="@{/proveedores/nuevo}" class="btn-link">Registrar Nuevo Proveedor</a>
+        <a th:href="@{/productos/nuevo}" class="btn-link" style="background-color: #28a745; color: white; border-color: #28a745;">Registrar Nuevo Producto</a>
+        <form th:action="@{/logout}" method="post" style="display: inline-block; margin-left: 10px;">
+            <button type="submit" 
+                style="background-color: #dc3545; color: white; padding: 8px 15px; border: none; border-radius: 4px; cursor: pointer;">
+                Cerrar Sesión
+            </button>
+        </form>
+    </div>
+
+    
+
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nombre del Producto</th>
+                <th>Stock</th>
+                <th>Precio</th>
+                <th>Proveedor</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="producto : ${productos}">
+                <td th:text="${producto.id}">1</td>
+                <td th:text="${producto.nombre}">Cámara de Seguridad A100</td>
+                <td th:text="${#numbers.formatInteger(producto.stock, 0)}">50</td>
+                <td th:text="'$' + ${#numbers.formatDecimal(producto.precio, 0, 'POINT', 2, 'COMMA')}">99.99</td>
+                <td th:text="${producto.proveedor != null ? producto.proveedor.nombre : 'N/A'}">HIKVISION</td>
+                <td>
+                    <a th:href="@{'/productos/editar/' + ${producto.id}}">Editar</a>
+                    |
+                    <a th:href="@{'/productos/eliminar/' + ${producto.id}}" 
+                       onclick="return confirm('¿Estás seguro de eliminar este producto?');">Eliminar</a>
+                </td>
+            </tr>
+            <tr th:if="${productos.isEmpty()}">
+                <td colspan="6" style="text-align: center;">No hay productos registrados.</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

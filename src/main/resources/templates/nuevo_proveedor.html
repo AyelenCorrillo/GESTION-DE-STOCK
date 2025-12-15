@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Registro de Proveedor</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .container { max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #ccc; border-radius: 5px; }
+        label { display: block; margin-top: 10px; }
+        input[type="text"] { width: 90%; padding: 8px; margin-top: 5px; border: 1px solid #ddd; border-radius: 4px; }
+        button { background-color: #4CAF50; color: white; padding: 10px 15px; border: none; border-radius: 4px; cursor: pointer; margin-top: 20px; }
+        button:hover { background-color: #45a049; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2>Registrar Nuevo Proveedor</h2>
+    
+    <form th:action="@{/proveedores/guardar}" th:object="${proveedor}" method="post">
+        
+        <label for="nombre">Nombre del Proveedor:</label>
+        <input type="text" id="nombre" th:field="*{nombre}" required>
+
+        <label for="telefono">Teléfono de Contacto:</label>
+        <input type="text" id="telefono" th:field="*{telefono}">
+
+        <button type="submit">Guardar Proveedor</button>
+    </form>
+    <br>
+    <a th:href="@{/}">Volver a la Lista de Productos</a>
+</div>
+</body>
+</html>
