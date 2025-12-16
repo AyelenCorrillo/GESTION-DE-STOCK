@@ -13,6 +13,20 @@ Este proyecto es una aplicación web full-stack diseñada para la gestión de pr
 * **Frontend:** Thymeleaf (Server-Side Rendering)
 * **Build Tool:** Maven
 
+## Configuración Inicial del Proyecto
+
+El proyecto fue inicializado con Spring Initializr. Esta captura documenta las dependencias clave que hacen posible el desarrollo Full-Stack con autenticación y vista del lado del servidor:
+
+| Dependencia | Propósito |
+| :--- | :--- |
+| **Spring Web** | Framework MVC y servidor embebido (Tomcat). |
+| **Thymeleaf** | **Motor de plantillas para renderizado del Frontend (Vistas y Login)**. |
+| **Spring Data JPA** | Persistencia y conexión con la base de datos. |
+| **PostgreSQL Driver** | Conexión específica con la base de datos de producción. |
+| **Spring Security** | *No se muestra en la captura, pero se implementó para la autenticación por roles.* |
+
+![Configuración inicial de dependencias en Spring Initializr](images/spring-initializr.png)
+
 ## Características Implementadas
 
 * **Gestión de Inventario (CRUD):** Funcionalidades completas para administrar productos y proveedores.
