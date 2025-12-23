@@ -4,8 +4,8 @@ Este proyecto es una aplicación web full-stack diseñada para la gestión de pr
 
 ## Tecnologías / Stack
 
-* **Lenguaje:** Java 17/21
-* **Framework:** Spring Boot 3.x
+* **Lenguaje:** Java 21
+* **Framework:** Spring Boot 4.0.0
 * **Web Framework:** Spring MVC
 * **Seguridad:** **Spring Security** (Autenticación en memoria y Autorización por roles).
 * **Base de Datos:** PostgreSQL
