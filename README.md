@@ -1,92 +1,69 @@
-# Sistema de Gestión de Inventario y Stock (CRUD con Spring Security)
+# Sistema de Gestión de Inventario y Stock (Java 21 & Spring Boot 3)
 
-Este proyecto es una aplicación web full-stack diseñada para la gestión de productos, inventario y proveedores. Demuestra la implementación de un CRUD (Create, Read, Update, Delete) robusto, autenticación basada en roles y filtros de búsqueda avanzados.
+Este proyecto es una aplicación web full-stack diseñada para la gestión integral de productos y proveedores. Implementa un sistema CRUD robusto, seguridad perimetral basada en roles y una interfaz dinámica que adapta sus funciones según el nivel de acceso del usuario.
 
 ## Tecnologías / Stack
 
-* **Lenguaje:** Java 21
+* **Lenguaje:** Java 21 (LTS)
 * **Framework:** Spring Boot 4.0.0
-* **Web Framework:** Spring MVC
-* **Seguridad:** **Spring Security** (Autenticación en memoria y Autorización por roles).
+* **Seguridad:** Spring Security (Autorización por roles y protección de rutas)
 * **Base de Datos:** PostgreSQL
 * **Persistencia:** Spring Data JPA / Hibernate
-* **Frontend:** Thymeleaf (Server-Side Rendering)
+* **Frontend:** Thymeleaf + Spring Security Extras (Renderizado condicional)
 * **Build Tool:** Maven
 
-## Configuración Inicial del Proyecto
+## Seguridad y Control de Acceso
 
-El proyecto fue inicializado con Spring Initializr. Esta captura documenta las dependencias clave que hacen posible el desarrollo Full-Stack con autenticación y vista del lado del servidor:
-
-| Dependencia | Propósito |
-| :--- | :--- |
-| **Spring Web** | Framework MVC y servidor embebido (Tomcat). |
-| **Thymeleaf** | **Motor de plantillas para renderizado del Frontend (Vistas y Login)**. |
-| **Spring Data JPA** | Persistencia y conexión con la base de datos. |
-| **PostgreSQL Driver** | Conexión específica con la base de datos de producción. |
-| **Spring Security** | *No se muestra en la captura, pero se implementó para la autenticación por roles.* |
-
-![Configuración inicial de dependencias en Spring Initializr](images/spring-initializr.png)
-
-## Características Implementadas
-
-* **Gestión de Inventario (CRUD):** Funcionalidades completas para administrar productos y proveedores.
-* **Autenticación y Autorización:**
-    * Log-in personalizado utilizando Spring Security.
-    * Control de acceso basado en roles (`ADMIN` vs. `USER`).
-    * `ADMIN` tiene acceso completo (Crear, Editar, Eliminar).
-    * `USER` tiene acceso de solo lectura (Ver listado y Buscar).
-* **Modelo de Datos Relacional:** Implementación de la relación One-to-Many entre Productos y Proveedores.
-* **Filtros de Búsqueda:** Búsqueda dinámica y en tiempo real de productos por nombre (ignorando mayúsculas y minúsculas).
-* **Formato Profesional:** Precios y Stock formateados correctamente en la interfaz de usuario.
-
-## Instrucciones de Ejecución
-
-1.  **Base de Datos:** Asegúrese de tener PostgreSQL instalado y una base de datos creada (ej: `gestor_inventario_db`).
-2.  **Configuración:** Actualice las credenciales de conexión en el archivo `src/main/resources/application.properties` (URL, username y password).
-3.  **Ejecutar:** Use su IDE (VS Code) o la terminal para ejecutar la aplicación:
-    ```bash
-    mvn spring-boot:run
-    ```
-4.  **Acceso:** Navegue a `http://localhost:8080/`
+La aplicación implementa una segregación de funciones estricta. La interfaz de usuario se adapta dinámicamente: los botones de "Editar", "Eliminar" y "Registrar" solo se renderizan para usuarios con privilegios elevados.
 
 ### Cuentas de Prueba
 
-| Rol | Usuario | Contraseña | Permisos |
-| :--- | :--- | :--- | :--- |
-| **Administrador** | `admin` | `password` | CRUD completo |
-| **Usuario** | `user` | `password` | Solo lectura |
+| Rol | Usuario | Contraseña | Permisos | Vista de Interfaz |
+| :--- | :--- | :--- | :--- | :--- |
+| **Administrador** | `admin` | `password` | CRUD completo | Acceso total a botones y formularios |
+| **Usuario** | `user` | `password` | Solo lectura | Solo tabla de consulta y buscador |
 
+---
 
-## VISTAS DEL PROYECTO
+## Vistas del Proyecto
 
-Aquí puedes ver el flujo de la aplicación.
+### 1. Gestión de Acceso
+Autenticación personalizada. El sistema redirige automáticamente según el rol asignado en la lógica de `SecurityConfig`.
 
-### 1. Pantalla de Acceso (Spring Security)
+![Login](images/login.png)
 
-La aplicación implementa una autenticación robusta mediante Spring Security con una vista personalizada. Se demuestra la segregación de responsabilidades mediante roles: `admin` (CRUD total) y `user` (Solo lectura).
+### 2. Comparativa de Interfaz por Rol (Thymeleaf + Security)
+Esta sección demuestra la capacidad del sistema para ocultar elementos sensibles del DOM basándose en la autenticación del servidor.
 
-![Captura de la página de inicio de sesión con roles de prueba](images/login.png)
+| Vista de Administrador (Control Total) | Vista de Usuario (Consulta) |
+| :--- | :--- |
+| ![Admin View](images/admin_inventario_producto.png) | ![User View](images/user_inventario_producto.png) |
 
-### 2. Dashboard de Inventario y Filtros
+### 3. Filtros y Búsqueda Avanzada
+Implementación de búsqueda insensible a mayúsculas/minúsculas para una localización rápida de stock.
 
-La vista principal lista todos los productos con el precio formateado correctamente. Incluye una barra de búsqueda que filtra productos por nombre en tiempo real, mejorando la usabilidad.
+![Filtrado de productos](images/filtrar.png)
 
-![Captura de la tabla principal de inventario con precios y opciones de acción](images/inventario_producto.png)
+### 4. Formularios de Registro
+Diseño orientado a la integridad de datos, permitiendo la vinculación de productos con proveedores existentes.
 
-### 3. Búsqueda y Lectura (Usuario Básico)
+| Registro de Proveedor | Registro de Producto |
+| :--- | :--- |
+| ![Nuevo Proveedor](images/registrar_proveedor.png) | ![Nuevo Producto](images/registrar_producto.png) |
 
-Se demuestra el filtro de búsqueda por nombre (`keyword`) funcionando, lo que permite a los usuarios (incluso a los de rol `USER`) encontrar productos específicos fácilmente.
+---
 
-![Captura de la tabla filtrada por el término 'aire'](images/filtrar.png)
+## Configuración e Instalación
 
-### 4. Formulario de Registro de Proveedor
-
-Formulario simple para crear la entidad `Proveedor`, fundamental para la relación One-to-Many.
-
-![Captura del formulario para registrar nuevos proveedores](images/registrar_proveedor.png)
-
-### 5. Formulario de Registro de Producto
-
-El formulario de `Producto` permite registrar Stock, Precio y, crucialmente, seleccionar el `Proveedor` asociado de un listado dinámico.
-
-![Captura del formulario para registrar un nuevo producto con la selección de proveedor](images/registrar_producto.png)
+1.  **Base de Datos:** Cree una base de datos en PostgreSQL llamada `gestor_inventario_db`.
+2.  **Configuración:** Los parámetros de conexión se encuentran en `application.properties`:
+    ```properties
+    spring.datasource.url=jdbc:postgresql://localhost:5432/TU_BASE_DE_DATOS
+    spring.datasource.username=TU_USUARIO
+    spring.datasource.password=TU_CONTRASEÑA
+    ```
+3.  **Ejecución:**
+    ```bash
+    mvn spring-boot:run
+    ```
+4.  **Acceso:** `http://localhost:8080/`

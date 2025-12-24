@@ -1,40 +1,53 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" 
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <title>Gestión de Inventario</title>
     <style>
-        body { font-family: Arial, sans-serif; margin: 20px; }
-        .container { max-width: 1200px; margin: 0 auto; }
-        h2 { border-bottom: 2px solid #333; padding-bottom: 10px; }
+        body { font-family: Arial, sans-serif; margin: 20px; background-color: #f8f9fa; }
+        .container { max-width: 1200px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        h1 { color: #333; border-bottom: 2px solid #007bff; padding-bottom: 10px; }
+        
+        /* Estilos del buscador */
+        .search-container { margin-bottom: 20px; display: flex; gap: 10px; align-items: center; }
+        input[type="text"] { padding: 8px; border: 1px solid #ddd; border-radius: 4px; flex-grow: 1; }
+        
+        /* Estilos de botones */
+        .btn-link { padding: 8px 15px; text-decoration: none; border-radius: 4px; font-size: 14px; display: inline-block; border: 1px solid #007bff; color: #007bff; }
+        .btn-admin { background-color: #28a745; color: white !important; border-color: #28a745; }
+        .btn-search { background-color: #333; color: white; border: none; cursor: pointer; }
+        .btn-logout { background-color: #dc3545; color: white; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer; }
+        
+        /* Estilos de la tabla */
         table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
-        th { background-color: #f2f2f2; }
-        .btn-link { margin-right: 10px; padding: 5px 10px; text-decoration: none; border: 1px solid #007bff; border-radius: 3px; color: #007bff; }
+        th, td { border: 1px solid #dee2e6; padding: 12px; text-align: left; }
+        th { background-color: #f2f2f2; color: #333; }
+        tr:hover { background-color: #f1f1f1; }
+        .actions-cell a { color: #007bff; text-decoration: none; margin: 0 5px; }
+        .actions-cell a:hover { text-decoration: underline; }
     </style>
 </head>
 <body>
 <div class="container">
     <h1>Inventario de Productos</h1>
 
-    <form th:action="@{/}" method="get" style="margin-bottom: 20px;">
+    <form th:action="@{/}" method="get" class="search-container">
         <input type="text" name="keyword" th:value="${keyword}" placeholder="Buscar producto por nombre..." size="50">
-        <button type="submit" style="background-color: #333; color: white; padding: 8px 15px; border: none; border-radius: 3px; cursor: pointer;">Buscar</button>
-        <a th:href="@{/}" class="btn-link" style="margin-left: 10px;">Limpiar Filtro</a>
+        <button type="submit" class="btn-search">Buscar</button>
+        <a th:href="@{/}" class="btn-link">Limpiar Filtro</a>
     </form>
 
-    <div>
-        <a th:href="@{/proveedores/nuevo}" class="btn-link">Registrar Nuevo Proveedor</a>
-        <a th:href="@{/productos/nuevo}" class="btn-link" style="background-color: #28a745; color: white; border-color: #28a745;">Registrar Nuevo Producto</a>
-        <form th:action="@{/logout}" method="post" style="display: inline-block; margin-left: 10px;">
-            <button type="submit" 
-                style="background-color: #dc3545; color: white; padding: 8px 15px; border: none; border-radius: 4px; cursor: pointer;">
-                Cerrar Sesión
-            </button>
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <div sec:authorize="hasRole('ADMIN')">
+            <a th:href="@{/proveedores/nuevo}" class="btn-link">Registrar Nuevo Proveedor</a>
+            <a th:href="@{/productos/nuevo}" class="btn-link btn-admin">Registrar Nuevo Producto</a>
+        </div>
+
+        <form th:action="@{/logout}" method="post">
+            <button type="submit" class="btn-logout">Cerrar Sesión</button>
         </form>
     </div>
-
-    
 
     <table>
         <thead>
@@ -44,25 +57,29 @@
                 <th>Stock</th>
                 <th>Precio</th>
                 <th>Proveedor</th>
-                <th>Acciones</th>
+                <th sec:authorize="hasRole('ADMIN')">Acciones</th>
             </tr>
         </thead>
         <tbody>
             <tr th:each="producto : ${productos}">
                 <td th:text="${producto.id}">1</td>
-                <td th:text="${producto.nombre}">Cámara de Seguridad A100</td>
+                <td th:text="${producto.nombre}">Cámara de Seguridad</td>
                 <td th:text="${#numbers.formatInteger(producto.stock, 0)}">50</td>
                 <td th:text="'$' + ${#numbers.formatDecimal(producto.precio, 0, 'POINT', 2, 'COMMA')}">99.99</td>
                 <td th:text="${producto.proveedor != null ? producto.proveedor.nombre : 'N/A'}">HIKVISION</td>
-                <td>
+                
+                <td sec:authorize="hasRole('ADMIN')" class="actions-cell">
                     <a th:href="@{'/productos/editar/' + ${producto.id}}">Editar</a>
-                    |
+                    <span style="color: #ccc;">|</span>
                     <a th:href="@{'/productos/eliminar/' + ${producto.id}}" 
+                       style="color: #dc3545;"
                        onclick="return confirm('¿Estás seguro de eliminar este producto?');">Eliminar</a>
                 </td>
             </tr>
             <tr th:if="${productos.isEmpty()}">
-                <td colspan="6" style="text-align: center;">No hay productos registrados.</td>
+                <td th:colspan="${#authorization.expression('hasRole(''ADMIN'')') ? 6 : 5}" style="text-align: center; padding: 20px; color: #666;">
+                    No hay productos registrados que coincidan con la búsqueda.
+                </td>
             </tr>
         </tbody>
     </table>
